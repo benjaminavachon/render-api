@@ -16,9 +16,8 @@ def team_id(id):
     mycol = mydb["sports"]
 
     myquery = { "team": "001" }
-    mydoc = list(mycol.find(myquery))
-
-    if(len(mydoc) > 0):
-      return mydoc
+    mydoc = mycol.find(myquery)
+    
+    return mydoc
     
     return {"message": "No Team Exists"}
