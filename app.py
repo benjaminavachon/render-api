@@ -20,7 +20,6 @@ def team_id(id):
     mydoc = list(mycol.find(myquery))
 
     if(len(mydoc) > 0):
-      mydoc_final = list(mycol.find(myquery))
-      return mydoc_final
+      return mydoc
     else:
       return {"message": "No Team Exists"}
