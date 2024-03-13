@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 app = Flask(__name__)
 
 def scrape():
-  return_string = ''
   chrome_options = webdriver.ChromeOptions()
   chrome_options.add_argument("--headless=new")
   chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -76,7 +75,7 @@ def team_id(id):
     mydoc = list(mycol.find(myquery))
 
     if(len(mydoc) > 0):
-      newvalues = { "$set": { "line_one": json['line_one'],"line_two": json['line_two'] } }
+      newvalues = { "$set": { "line_one": new_json['line_one'],"line_two": new_json['line_two'] } }
       mycol.update_one(myquery, newvalues)
 
       return json.loads(json_util.dumps(list(mycol.find(myquery)[0])))
