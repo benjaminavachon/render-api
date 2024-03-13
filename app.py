@@ -3,6 +3,8 @@ import pymongo
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+app = Flask(__name__)
+
 def scrape():
   chrome_options = webdriver.ChromeOptions()
   chrome_options.add_argument("--headless=new")
@@ -56,9 +58,6 @@ def scrape():
     driver.close()
 
   return {"team": "001", "line_one": line_one, "line_two": line_two}
-
-
-app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
