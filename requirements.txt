@@ -2,4 +2,3 @@ Flask
 Gunicorn
 pymongo>=3.1
 selenium
-bson
