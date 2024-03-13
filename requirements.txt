@@ -1,4 +1,3 @@
 Flask
 Gunicorn
-pymongo
-selenium
+pymongo>=3.1

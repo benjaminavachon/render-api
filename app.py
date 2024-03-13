@@ -1,7 +1,5 @@
 from flask import Flask
 import pymongo
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 
 app = Flask(__name__)
 
@@ -11,6 +9,7 @@ def hello_world():
 
 @app.route('/team/<id>')
 def team_id(id):
+
     myclient = pymongo.MongoClient("mongodb+srv://benjaminvachon:Cyberpatriot123@sports.a7dkt84.mongodb.net/?retryWrites=true&w=majority&appName=sports")
     
     mydb = myclient["sports"]
@@ -21,5 +20,5 @@ def team_id(id):
 
     if(len(mydoc) > 0):
       return mydoc
-    else:
-      return {"message": "No Team Exists"}
+    
+    return {"message": "No Team Exists"}
