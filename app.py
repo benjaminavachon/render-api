@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, json
 import pymongo
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 app = Flask(__name__)
 
@@ -16,8 +18,9 @@ def team_id(id):
     mycol = mydb["sports"]
 
     myquery = { "team": "001" }
-    mydoc = mycol.find(myquery)
+    mydoc = list(mycol.find(myquery))
+
+    if(len(mydoc) > 0):
+      return json.dumps(mydoc[0])
     
-    return mydoc
-    
-    return {"message": "No Team Exists"}
+    return json.dumps({"message": "No Team Exists"})
