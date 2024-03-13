@@ -1,4 +1,5 @@
 from flask import Flask, json
+from bson import json_util
 import pymongo
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,6 +22,7 @@ def team_id(id):
     mydoc = list(mycol.find(myquery))
 
     if(len(mydoc) > 0):
-      return json.dumps(mydoc[0])
+      return json.loads(json_util.dumps(mydoc[0]))
+
     
     return json.dumps({"message": "No Team Exists"})
