@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 app = Flask(__name__)
 
 def scrape():
-  driver = webdriver.Chrome(ChromeDriverManager().install())
+  driver = webdriver.Chrome()
   driver.get("https://www.espn.com/mlb/team/_/name/bos/boston-red-sox")
   elems = driver.find_elements(By.CLASS_NAME, "Schedule__Game")
 
