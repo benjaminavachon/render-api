@@ -2,15 +2,18 @@ from flask import Flask, json
 from bson import json_util
 import pymongo
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 app = Flask(__name__)
 
 def scrape():
   
-  options = webdriver.ChromeOptions()
-  options.headless = True
+  options = webdriver.Options()
+  options.add_argument("--headless=new")
   options.add_argument("--no-sandbox")
+  options.add_argument("--disable-extensions")
+  options.add_argument("--disable-gpu")
   driver = webdriver.Chrome(options=options)
   driver.get("https://www.espn.com/mlb/team/_/name/bos/boston-red-sox")
   elems = driver.find_elements(By.CLASS_NAME, "Schedule__Game")
