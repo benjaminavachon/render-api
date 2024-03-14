@@ -1,17 +1,18 @@
-FROM python:3.11.4-slim-bullseye
-WORKDIR /app
-
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+FROM ubuntu
 
 # install system dependencies
 RUN apt-get update
-
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
-COPY . /app
+RUN apt-get install -y wget
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
-ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000"]
+WORKDIR /app
+
+COPY . .
+
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
