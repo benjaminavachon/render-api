@@ -8,10 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 app = Flask(__name__)
 
 def scrape():
-  chrome_options = webdriver.ChromeOptions()
-  chrome_options.add_argument("--headless=new")
-  chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-  driver = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options)
+  driver = webdriver.Chrome(ChromeDriverManager().install())
   driver.get("https://www.espn.com/mlb/team/_/name/bos/boston-red-sox")
   elems = driver.find_elements(By.CLASS_NAME, "Schedule__Game")
 
