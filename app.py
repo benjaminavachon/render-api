@@ -82,6 +82,6 @@ def team_id(id):
       newvalues = { "$set": { "line_one": new_json['line_one'],"line_two": new_json['line_two'] } }
       mycol.update_one(myquery, newvalues)
 
-      return json.loads(json_util.dumps(list(mycol.find(myquery)[0])))
+      return json.loads(json_util.dumps(mycol.find(myquery)[0]))
     
     return json.dumps({"message": "No Team Exists"})
