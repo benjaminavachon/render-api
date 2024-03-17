@@ -1,66 +1,50 @@
 from flask import Flask, json
 from bson import json_util
 import pymongo
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+names = {
+  "Yankees":"NYY"
+}
+
 def scrape():
-  
-  options = Options()
-  options.add_argument("--headless=new")
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-extensions")
-  options.add_argument("--disable-gpu")
-  driver = webdriver.Chrome(options=options)
-  driver.get("https://www.espn.com/mlb/team/_/name/bos/boston-red-sox")
-  elems = driver.find_elements(By.CLASS_NAME, "Schedule__Game")
+  r = requests.get('https://www.espn.com/mlb/team/_/name/bos/boston-red-sox',headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+  soup = BeautifulSoup(r.text, 'lxml')
 
-  elem = elems[0]
+  game_tab = soup.select_one('a[class^="Schedule__Game"]')
 
-  if("LIVE!" in elem.get_attribute('innerHTML')):
-    url = elem.get_attribute('href')
-    driver.get(url)
-    game_strip_team_away = driver.find_elements(By.CLASS_NAME, "Gamestrip__Team--away")[0]
-    away_name = game_strip_team_away.find_elements(By.CLASS_NAME, "ScoreCell__TeamName--abbev")[0].get_attribute('innerHTML')
-    away_score = game_strip_team_away.find_elements(By.CLASS_NAME, "Gamestrip__Score")[0].get_attribute('innerHTML')
+  team_one = game_tab.select_one('span[class^="Schedule__Team"]').text
 
-    game_strip_team_home = driver.find_elements(By.CLASS_NAME, "Gamestrip__Team--home")[0]
-    home_name = game_strip_team_home.find_elements(By.CLASS_NAME, "ScoreCell__TeamName--abbev")[0].get_attribute('innerHTML')
-    home_score = game_strip_team_home.find_elements(By.CLASS_NAME, "Gamestrip__Score")[0].get_attribute('innerHTML')
-    
-    #line one is done
-    line_one = away_name+" "+ away_score +" @ "+home_score+" "+home_name
+  vs_at = game_tab.select_one('span[class^="Schedule_atVs"]').text
 
-    batter_wrapper = driver.find_elements(By.CLASS_NAME, "Athlete__PlayerWrapper")[1]
-    player_type = batter_wrapper.find_element(By.CLASS_NAME, "Athlete__Header").get_attribute('innerHTML')
+  is_live = game_tab.select_one('span[class^="Schedule__Time"]').text
+  if "LIVE!" in is_live:
+    link = game_tab.get('href')
+    r_one = requests.get(link,headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+    soup_one = BeautifulSoup(r_one.text, 'lxml')
 
-    if(player_type == "Batter"):
-      player_name = batter_wrapper.find_element(By.CLASS_NAME, "Athlete__PlayerName").get_attribute('innerHTML').split(' ')[1]
-      line_two = player_name
+    divs = soup_one.select('div[class^="Gamestrip__Team"]')
+    team_one_data = divs[0].text.split("away")[1]
+    team_two_data = divs[3].text.split("home")[1]
+
+    if("vs" in vs_at):
+      line_one = team_two_data+" BOS "+vs_at+" "+names[team_one]+" "+team_one_data
     else:
-      line_two = "Between Innings"
-    
-    driver.close()
+      line_one = team_one_data+" BOS "+vs_at+" "+names[team_one]+" "+team_two_data
 
+    hitter = soup_one.select('span[class^="Athlete__Header"]')[1].text
+    if("Batter" not in hitter):
+      line_two = "between innnings"
+    else:
+      line_two = soup_one.select('span[class^="Athlete__PlayerName"]')[1].text
+    return {'team': '001','line_one': line_one,'line_two': line_two}
   else:
-    at_vs = elem.find_element(By.CLASS_NAME,"Schedule_atVs").get_attribute('innerHTML')
-    if(at_vs == "vs"):
-      team_vs = elem.find_element(By.CLASS_NAME,"Schedule__Team").get_attribute('innerHTML')
-      line_one = "BOS "+at_vs+" "+team_vs 
-    else:
-      team_at = elem.find_element(By.CLASS_NAME,"Schedule__Team").get_attribute('innerHTML')
-      line_one = "BOS "+at_vs+" "+team_at
-
-    date_time = elem.find_elements(By.CLASS_NAME, "Schedule__Time")
-
-    line_two = date_time[0].get_attribute('innerHTML')+" @ "+date_time[1].get_attribute('innerHTML')
-
-    driver.close()
-
-  return {'team': '001','line_one': line_one,'line_two': line_two}
+    line_one = "BOS "+vs_at+" "+team_one
+    line_two = is_live
+    return {'team': '001','line_one': line_one,'line_two': line_two}
 
 @app.route('/')
 def hello_world():
