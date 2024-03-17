@@ -79,6 +79,9 @@ def team_id(id):
 
 @app.route('/update/team/<id>')
 def update_team(id):
+
+  temp_json = scrape()
+
   myclient = pymongo.MongoClient("mongodb+srv://benjaminvachon:Cyberpatriot123@sports.a7dkt84.mongodb.net/?retryWrites=true&w=majority&appName=sports")
   
   mydb = myclient["sports"]
@@ -88,4 +91,4 @@ def update_team(id):
 
   doc = mycol.find(myquery)[0]
 
-  return json.loads(json_util.dumps(doc))
+  return json.loads(json_util.dumps(temp_json))
