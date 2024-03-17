@@ -88,7 +88,7 @@ def update_team(id):
   mycol = mydb["sports"]
 
   myquery = { "team": id }
+  newvalues = { "$set": { "line_one": temp_json["line_one"], "line_two": temp_json["line_two"] } }
+  mycol.update_one(myquery, newvalues)
 
-  doc = mycol.find(myquery)[0]
-
-  return temp_json["line_one"]
+  return "updated"
