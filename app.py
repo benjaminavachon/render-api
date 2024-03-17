@@ -79,4 +79,4 @@ def team_id(id):
 
 @app.route('/update/team/<id>')
 def update_team(id):
-  print(id)
+  return id
