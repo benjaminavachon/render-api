@@ -68,12 +68,15 @@ def hello_world():
 
 @app.route('/team/<id>')
 def team_id(id):
-    
-    myclient = pymongo.MongoClient("mongodb+srv://benjaminvachon:Cyberpatriot123@sports.a7dkt84.mongodb.net/?retryWrites=true&w=majority&appName=sports")
-    
-    mydb = myclient["sports"]
-    mycol = mydb["sports"]
+  myclient = pymongo.MongoClient("mongodb+srv://benjaminvachon:Cyberpatriot123@sports.a7dkt84.mongodb.net/?retryWrites=true&w=majority&appName=sports")
+  
+  mydb = myclient["sports"]
+  mycol = mydb["sports"]
 
-    myquery = { "team": "001" }
+  myquery = { "team": "001" }
 
-    return json.loads(json_util.dumps(mycol.find(myquery)[0]))
+  return json.loads(json_util.dumps(mycol.find(myquery)[0]))
+
+@app.route('/update/team/<id>')
+def update_team(id):
+  print(id)
