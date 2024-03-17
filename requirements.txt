@@ -3,3 +3,4 @@ Gunicorn
 pymongo>=3.1
 bs4
 requests
+lxml
