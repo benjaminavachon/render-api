@@ -91,4 +91,4 @@ def update_team(id):
 
   doc = mycol.find(myquery)[0]
 
-  return json.loads(json_util.dumps(temp_json))
+  return temp_json["line_one"]
