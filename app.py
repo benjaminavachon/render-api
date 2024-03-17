@@ -68,20 +68,12 @@ def hello_world():
 
 @app.route('/team/<id>')
 def team_id(id):
-
-    new_json = scrape()
+    
     myclient = pymongo.MongoClient("mongodb+srv://benjaminvachon:Cyberpatriot123@sports.a7dkt84.mongodb.net/?retryWrites=true&w=majority&appName=sports")
     
     mydb = myclient["sports"]
     mycol = mydb["sports"]
 
     myquery = { "team": "001" }
-    mydoc = list(mycol.find(myquery))
 
-    if(len(mydoc) > 0):
-      newvalues = { "$set": { "line_one": new_json['line_one'],"line_two": new_json['line_two'] } }
-      mycol.update_one(myquery, newvalues)
-
-      return json.loads(json_util.dumps(mycol.find(myquery)[0]))
-    
-    return json.dumps({"message": "No Team Exists"})
+    return json.loads(json_util.dumps(mycol.find(myquery)[0]))
